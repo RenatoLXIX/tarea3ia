@@ -14,7 +14,7 @@ class SistemaExpertoDL:
                     "recursos_computacionales": "alto"
                 },
                 "recomendacion": "CNN (Redes Neuronales Convolucionales)",
-                "justificacion": "Las CNN son ideales para procesamiento de imágenes con datasets grandes y recursos computacionales adecuados.",
+                "justificacion": "Las CNN son ideales para procesamiento de imagenes con datasets grandes y recursos computacionales adecuados.",
                 "confianza": 0.95
             },
             {
@@ -35,7 +35,7 @@ class SistemaExpertoDL:
                     "tarea": "clasificacion",
                     "longitud_texto": "corto"
                 },
-                "recomendacion": "BERT o Transformers para clasificación de texto",
+                "recomendacion": "BERT o Transformers para clasificacion de texto",
                 "justificacion": "Los transformers son state-of-the-art para procesamiento de lenguaje natural.",
                 "confianza": 0.92
             },
@@ -47,7 +47,7 @@ class SistemaExpertoDL:
                     "recursos_computacionales": "alto"
                 },
                 "recomendacion": "GPT o modelos de lenguaje grandes",
-                "justificacion": "Para generación de texto se requieren modelos autoregresivos como GPT.",
+                "justificacion": "Para generacion de texto se requieren modelos autoregresivos como GPT.",
                 "confianza": 0.88
             },
             {
@@ -89,7 +89,7 @@ class SistemaExpertoDL:
                     "tamano_dataset": "pequeno"
                 },
                 "recomendacion": "Gradient Boosting (XGBoost, LightGBM) o MLP simple",
-                "justificacion": "Para datasets pequeños sin relaciones complejas, métodos clásicos pueden ser suficientes.",
+                "justificacion": "Para datasets pequeños sin relaciones complejas, metodos clasicos pueden ser suficientes.",
                 "confianza": 0.75
             },
             {
@@ -99,7 +99,7 @@ class SistemaExpertoDL:
                     "tarea": "reconocimiento_voz"
                 },
                 "recomendacion": "CNN + RNN o Transformers para audio",
-                "justificacion": "Combinación de CNN para características espectrales y RNN/Transformers para secuencias temporales.",
+                "justificacion": "Combinacion de CNN para caracteristicas espectrales y RNN/Transformers para secuencias temporales.",
                 "confianza": 0.88
             },
             {
@@ -108,126 +108,157 @@ class SistemaExpertoDL:
                     "requiere_interpretabilidad": True,
                     "tipo_datos": "cualquiera"
                 },
-                "recomendacion": "Modelos con atención o SHAP/LIME para interpretabilidad",
-                "justificacion": "Se priorizan técnicas que permiten explicar las decisiones del modelo.",
+                "recomendacion": "Modelos con atencion o SHAP/LIME para interpretabilidad",
+                "justificacion": "Se priorizan tecnicas que permiten explicar las decisiones del modelo.",
                 "confianza": 0.70
             }
         ]
     
-    def mostrar_opciones(self):
-        """Muestra las opciones disponibles para cada característica"""
-        print("\n" + "="*60)
-        print("SISTEMA EXPERTO - RECOMENDACIÓN DE TÉCNICAS DL")
-        print("="*60)
+    def _preguntar_opciones(self, pregunta, opciones, obligatorio=True):
+        """Hace una pregunta con opciones especificas"""
+        print(f"\n{pregunta}")
+        for i, opcion in enumerate(opciones, 1):
+            print(f"  {i}. {opcion}")
         
-        print("\nOPCIONES DISPONIBLES:")
-        print("\n1. TIPO DE DATOS:")
-        print("   - imagenes")
-        print("   - texto") 
-        print("   - series_temporales")
-        print("   - tabular")
-        print("   - audio")
-        
-        print("\n2. TAMAÑO DEL DATASET:")
-        print("   - muy_pequeno (menos de 1,000 muestras)")
-        print("   - pequeno (1,000 - 10,000 muestras)")
-        print("   - medio (10,000 - 100,000 muestras)")
-        print("   - grande (100,000 - 1,000,000 muestras)")
-        print("   - muy_grande (más de 1,000,000 muestras)")
-        
-        print("\n3. RECURSOS COMPUTACIONALES:")
-        print("   - muy_bajo (CPU básico)")
-        print("   - bajo (CPU bueno)")
-        print("   - medio (GPU básica)")
-        print("   - alto (GPU buena)")
-        print("   - muy_alto (múltiples GPUs)")
-        
-        print("\n4. TAREA PRINCIPAL:")
-        print("   - clasificacion")
-        print("   - regresion")
-        print("   - segmentacion")
-        print("   - deteccion")
-        print("   - generacion")
-        print("   - reconocimiento_voz")
-        
-        print("\n5. LONGITUD DEL TEXTO (solo para datos de texto):")
-        print("   - corto (menos de 128 tokens)")
-        print("   - medio (128-512 tokens)")
-        print("   - largo (más de 512 tokens)")
-        
-        print("\n6. PATRONES TEMPORALES (solo para series temporales):")
-        print("   - simples")
-        print("   - complejos")
-        print("   - largos")
-        
-        print("\n7. RELACIONES NO LINEALES (solo para datos tabulares):")
-        print("   - true (sí)")
-        print("   - false (no)")
-        
-        print("\n8. ¿REQUIERE INTERPRETABILIDAD?")
-        print("   - true (sí)")
-        print("   - false (no)")
+        while True:
+            try:
+                respuesta = input(f"\nSeleccione una opcion (1-{len(opciones)}): ").strip()
+                if not respuesta and not obligatorio:
+                    return None
+                
+                indice = int(respuesta) - 1
+                if 0 <= indice < len(opciones):
+                    return opciones[indice]
+                else:
+                    print(f"ERROR: Por favor, seleccione un numero entre 1 y {len(opciones)}")
+            except ValueError:
+                print("ERROR: Por favor, ingrese un numero valido")
     
-    def recolectar_hechos(self):
-        """Recolecta los hechos del usuario mediante la consola"""
+    def _preguntar_si_no(self, pregunta):
+        """Hace una pregunta de si/no"""
+        while True:
+            respuesta = input(f"\n{pregunta} (s/n): ").strip().lower()
+            if respuesta in ['s', 'si', 'sí', 'y', 'yes']:
+                return True
+            elif respuesta in ['n', 'no']:
+                return False
+            else:
+                print("ERROR: Por favor, responda 's' para si o 'n' para no")
+    
+    def recolectar_hechos_interactivo(self):
+        """Recolecta los hechos preguntando uno por uno"""
         hechos = {}
         
-        print("\n" + "-"*60)
-        print("INGRESE LAS CARACTERÍSTICAS DE SU DATASET")
-        print("-"*60)
+        print("\n" + "="*60)
+        print("ANALISIS DE SU DATASET - PREGUNTAS INTERACTIVAS")
+        print("="*60)
         
-        # Tipo de datos (obligatorio)
-        while True:
-            tipo = input("\nTipo de datos: ").strip().lower()
-            if tipo in ["imagenes", "texto", "series_temporales", "tabular", "audio"]:
-                hechos["tipo_datos"] = tipo
-                break
-            else:
-                print("❌ Opción inválida. Use: imagenes, texto, series_temporales, tabular, audio")
+        # 1. Tipo de datos
+        print("\nPREGUNTA 1: TIPO DE DATOS")
+        tipo_opciones = [
+            "Imagenes (fotos, dibujos, etc.)",
+            "Texto (documentos, mensajes, etc.)", 
+            "Series Temporales (datos con orden temporal)",
+            "Datos Tabulares (tablas, hojas de calculo)",
+            "Audio (sonidos, voz, musica)"
+        ]
+        tipo_valores = ["imagenes", "texto", "series_temporales", "tabular", "audio"]
         
-        # Tamaño del dataset (obligatorio)
-        while True:
-            tamano = input("Tamaño del dataset: ").strip().lower()
-            if tamano in ["muy_pequeno", "pequeno", "medio", "grande", "muy_grande"]:
-                hechos["tamano_dataset"] = tamano
-                break
-            else:
-                print("❌ Opción inválida. Use: muy_pequeno, pequeno, medio, grande, muy_grande")
+        respuesta = self._preguntar_opciones("Que tipo de datos tiene?", tipo_opciones)
+        hechos["tipo_datos"] = tipo_valores[tipo_opciones.index(respuesta)]
         
-        # Recursos computacionales (obligatorio)
-        while True:
-            recursos = input("Recursos computacionales: ").strip().lower()
-            if recursos in ["muy_bajo", "bajo", "medio", "alto", "muy_alto"]:
-                hechos["recursos_computacionales"] = recursos
-                break
-            else:
-                print("❌ Opción inválida. Use: muy_bajo, bajo, medio, alto, muy_alto")
+        # 2. Tamaño del dataset
+        print("\nPREGUNTA 2: TAMAÑO DEL DATASET")
+        tamano_opciones = [
+            "Muy pequeño (menos de 1,000 muestras)",
+            "Pequeño (1,000 - 10,000 muestras)",
+            "Medio (10,000 - 100,000 muestras)", 
+            "Grande (100,000 - 1,000,000 muestras)",
+            "Muy grande (mas de 1,000,000 muestras)"
+        ]
+        tamano_valores = ["muy_pequeno", "pequeno", "medio", "grande", "muy_grande"]
         
-        # Tarea principal (opcional)
-        tarea = input("Tarea principal (opcional, Enter para omitir): ").strip().lower()
-        if tarea and tarea in ["clasificacion", "regresion", "segmentacion", "deteccion", "generacion", "reconocimiento_voz"]:
-            hechos["tarea"] = tarea
+        respuesta = self._preguntar_opciones("Que tamaño tiene su dataset?", tamano_opciones)
+        hechos["tamano_dataset"] = tamano_valores[tamano_opciones.index(respuesta)]
         
-        # Campos específicos según tipo de datos
+        # 3. Recursos computacionales
+        print("\nPREGUNTA 3: RECURSOS COMPUTACIONALES")
+        recursos_opciones = [
+            "Muy bajos (solo CPU basico)",
+            "Bajos (CPU bueno, sin GPU)",
+            "Medios (GPU basica o limitada)",
+            "Altos (GPU buena, como RTX 3080/4090)",
+            "Muy altos (multiples GPUs, servidores)"
+        ]
+        recursos_valores = ["muy_bajo", "bajo", "medio", "alto", "muy_alto"]
+        
+        respuesta = self._preguntar_opciones("Que recursos computacionales tiene disponibles?", recursos_opciones)
+        hechos["recursos_computacionales"] = recursos_valores[recursos_opciones.index(respuesta)]
+        
+        # 4. Tarea principal
+        print("\nPREGUNTA 4: TAREA PRINCIPAL")
+        tarea_opciones = [
+            "Clasificacion (categorizar en clases)",
+            "Regresion (predecir valores numericos)",
+            "Segmentacion (dividir en partes)",
+            "Deteccion (encontrar objetos)",
+            "Generacion (crear nuevo contenido)",
+            "Reconocimiento de voz"
+        ]
+        tarea_valores = ["clasificacion", "regresion", "segmentacion", "deteccion", "generacion", "reconocimiento_voz"]
+        
+        respuesta = self._preguntar_opciones("Cual es la tarea principal que quiere realizar?", tarea_opciones, obligatorio=False)
+        if respuesta:
+            hechos["tarea"] = tarea_valores[tarea_opciones.index(respuesta)]
+        
+        # 5. Preguntas especificas segun tipo de datos
         if hechos["tipo_datos"] == "texto":
-            longitud = input("Longitud del texto (corto/medio/largo, opcional): ").strip().lower()
-            if longitud in ["corto", "medio", "largo"]:
-                hechos["longitud_texto"] = longitud
+            print("\nPREGUNTA ESPECIFICA: LONGITUD DEL TEXTO")
+            longitud_opciones = [
+                "Corto (menos de 128 palabras/tokens)",
+                "Medio (128-512 palabras/tokens)", 
+                "Largo (mas de 512 palabras/tokens)"
+            ]
+            longitud_valores = ["corto", "medio", "largo"]
+            
+            respuesta = self._preguntar_opciones("Que longitud tienen sus textos?", longitud_opciones, obligatorio=False)
+            if respuesta:
+                hechos["longitud_texto"] = longitud_valores[longitud_opciones.index(respuesta)]
         
         elif hechos["tipo_datos"] == "series_temporales":
-            patrones = input("Patrones temporales (simples/complejos/largos, opcional): ").strip().lower()
-            if patrones in ["simples", "complejos", "largos"]:
-                hechos["patrones_temporales"] = patrones
+            print("\nPREGUNTA ESPECIFICA: PATRONES TEMPORALES")
+            patrones_opciones = [
+                "Simples (patrones faciles de identificar)",
+                "Complejos (multiples patrones entrelazados)",
+                "Largos (dependencias de largo plazo)"
+            ]
+            patrones_valores = ["simples", "complejos", "largos"]
+            
+            respuesta = self._preguntar_opciones("Que tipo de patrones temporales espera encontrar?", patrones_opciones, obligatorio=False)
+            if respuesta:
+                hechos["patrones_temporales"] = patrones_valores[patrones_opciones.index(respuesta)]
         
         elif hechos["tipo_datos"] == "tabular":
-            relaciones = input("¿Relaciones no lineales? (true/false, opcional): ").strip().lower()
-            if relaciones in ["true", "false"]:
-                hechos["relaciones_no_lineales"] = relaciones == "true"
+            print("\nPREGUNTA ESPECIFICA: RELACIONES ENTRE VARIABLES")
+            relaciones_opciones = [
+                "Si, hay relaciones complejas y no lineales",
+                "No, las relaciones son simples o lineales"
+            ]
+            
+            respuesta = self._preguntar_opciones("Espera encontrar relaciones complejas entre las variables?", relaciones_opciones, obligatorio=False)
+            if respuesta:
+                hechos["relaciones_no_lineales"] = respuesta.startswith("Si")
         
-        # Interpretabilidad
-        interpretabilidad = input("¿Requiere interpretabilidad? (true/false, opcional): ").strip().lower()
-        if interpretabilidad in ["true", "false"]:
-            hechos["requiere_interpretabilidad"] = interpretabilidad == "true"
+        # 6. Interpretabilidad
+        print("\nPREGUNTA FINAL: INTERPRETABILIDAD")
+        interpretabilidad_opciones = [
+            "Si, es importante entender como el modelo toma decisiones",
+            "No, el rendimiento es mas importante que la explicabilidad"
+        ]
+        
+        respuesta = self._preguntar_opciones("Requiere que el modelo sea interpretable?", interpretabilidad_opciones, obligatorio=False)
+        if respuesta:
+            hechos["requiere_interpretabilidad"] = respuesta.startswith("Si")
         
         return hechos
     
@@ -236,7 +267,7 @@ class SistemaExpertoDL:
         self.hechos = hechos_usuario
         recomendaciones = []
         
-        print(f"\n🔍 Analizando con hechos: {hechos_usuario}")
+        print(f"\nAnalizando caracteristicas del dataset...")
         
         for regla in self.reglas:
             if self._evaluar_condiciones(regla["condiciones"]):
@@ -263,22 +294,29 @@ class SistemaExpertoDL:
     def mostrar_resultados(self, recomendaciones, hechos):
         """Muestra los resultados de forma clara"""
         print("\n" + "="*60)
-        print("📊 RESULTADOS DE LA RECOMENDACIÓN")
+        print("RESULTADOS DE LA RECOMENDACION")
         print("="*60)
         
-        print(f"\nCaracterísticas analizadas:")
+        print(f"\nCARACTERISTICAS ANALIZADAS:")
         for clave, valor in hechos.items():
-            print(f"  • {clave.replace('_', ' ').title()}: {valor}")
+            nombre_bonito = clave.replace('_', ' ').title()
+            if isinstance(valor, bool):
+                valor_str = "Si" if valor else "No"
+            else:
+                valor_str = valor.replace('_', ' ').title()
+            print(f"   - {nombre_bonito}: {valor_str}")
         
-        print(f"\n🔧 TÉCNICAS RECOMENDADAS:")
+        print(f"\nTECNICAS RECOMENDADAS:")
         
         if not recomendaciones:
-            print("\n❌ No se encontraron recomendaciones específicas para las características proporcionadas.")
-            print("   Intente ajustar los parámetros o consulte con un experto en aprendizaje profundo.")
+            print("\nNo se encontraron recomendaciones especificas para las caracteristicas proporcionadas.")
+            print("Sugerencia: Intente ajustar algunos parametros o consulte con un experto en aprendizaje profundo.")
             return
         
         for i, rec in enumerate(recomendaciones, 1):
             print(f"\n{i}. {rec['tecnica']}")
-            print(f"   📈 Confianza: {rec['confianza']*100:.1f}%")
-            print(f"   💡 Justificación: {rec['justificacion']}")
-            print(f"   🔗 Regla aplicada: #{rec['regla_id']}")
+            print(f"   Confianza: {rec['confianza']*100:.1f}%")
+            print(f"   Justificacion: {rec['justificacion']}")
+            print(f"   Regla aplicada: #{rec['regla_id']}")
+        
+        print(f"\nRECOMENDACION PRINCIPAL: {recomendaciones[0]['tecnica']}")
