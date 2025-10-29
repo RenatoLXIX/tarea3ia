@@ -1,4 +1,5 @@
 from sistema_experto import SistemaExpertoDL
+from interfaz_grafica import main as gui_main
 
 def mostrar_bienvenida():
     """Muestra el mensaje de bienvenida"""
@@ -9,7 +10,8 @@ def mostrar_bienvenida():
     print("aprendizaje profundo segun las caracteristicas de su dataset.")
     print("\nSolo responda las preguntas una por una cuando se le solicite.")
 
-def main():
+def main_consola():
+    """Versión de consola del sistema"""
     sistema = SistemaExpertoDL("base_conocimiento.json")
     
     while True:
@@ -18,9 +20,10 @@ def main():
         print("\nQue desea hacer?")
         print("1. Realizar una nueva consulta")
         print("2. Ver informacion del sistema")
-        print("3. Salir del sistema")
+        print("3. Usar interfaz grafica")
+        print("4. Salir del sistema")
         
-        opcion = input("\nSeleccione una opcion (1-3): ").strip()
+        opcion = input("\nSeleccione una opcion (1-4): ").strip()
         
         if opcion == "1":
             print("\n" + "="*60)
@@ -55,12 +58,28 @@ def main():
             input("\nPresione Enter para continuar...")
                 
         elif opcion == "3":
+            print("\nIniciando interfaz grafica...")
+            gui_main()
+            break
+            
+        elif opcion == "4":
             print("\nHasta pronto!")
             break
             
         else:
-            print("ERROR: Opcion invalida. Por favor, seleccione 1, 2 o 3.")
+            print("ERROR: Opcion invalida. Por favor, seleccione 1, 2, 3 o 4.")
             input("Presione Enter para continuar...")
 
 if __name__ == "__main__":
-    main()
+    # Preguntar al usuario qué interfaz prefiere
+    print("SISTEMA EXPERTO - SELECCIÓN DE INTERFAZ")
+    print("1. Interfaz de Consola (modo texto)")
+    print("2. Interfaz Gráfica (modo visual)")
+    
+    eleccion = input("\nSeleccione el modo de interfaz (1-2): ").strip()
+    
+    if eleccion == "2":
+        print("\nIniciando interfaz gráfica...")
+        gui_main()
+    else:
+        main_consola()
