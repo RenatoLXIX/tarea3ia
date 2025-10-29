@@ -99,8 +99,7 @@
     {
       "id": 10,
       "condiciones": {
-        "requiere_interpretabilidad": true,
-        "tipo_datos": "cualquiera"
+        "requiere_interpretabilidad": true
       },
       "recomendacion": "Modelos con atencion o SHAP/LIME para interpretabilidad",
       "justificacion": "Se priorizan tecnicas que permiten explicar las decisiones del modelo.",
