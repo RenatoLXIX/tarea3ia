@@ -1,118 +1,70 @@
+import json
+import os
+
 class SistemaExpertoDL:
-    def __init__(self):
-        self.reglas = self._cargar_reglas()
+    def __init__(self, archivo_base_conocimiento="base_conocimiento.json"):
+        self.archivo_base_conocimiento = archivo_base_conocimiento
+        self.reglas = self._cargar_reglas_desde_json()
         self.hechos = {}
     
-    def _cargar_reglas(self):
-        """Define las reglas del sistema experto"""
+    def _cargar_reglas_desde_json(self):
+        """Carga las reglas desde un archivo JSON externo"""
+        try:
+            if not os.path.exists(self.archivo_base_conocimiento):
+                raise FileNotFoundError(f"No se encontro el archivo: {self.archivo_base_conocimiento}")
+            
+            with open(self.archivo_base_conocimiento, 'r', encoding='utf-8') as archivo:
+                datos = json.load(archivo)
+            
+            if "reglas" not in datos:
+                raise ValueError("El archivo JSON no contiene la clave 'reglas'")
+            
+            print(f"Base de conocimiento cargada: {len(datos['reglas'])} reglas")
+            return datos["reglas"]
+            
+        except Exception as e:
+            print(f"Error cargando la base de conocimiento: {e}")
+            print("Usando reglas por defecto...")
+            return self._cargar_reglas_por_defecto()
+    
+    def _cargar_reglas_por_defecto(self):
+        """Reglas por defecto en caso de error"""
         return [
             {
-                "id": 1,
-                "condiciones": {
-                    "tipo_datos": "imagenes",
-                    "tamano_dataset": "grande",
-                    "recursos_computacionales": "alto"
-                },
+                "id": 0,
+                "condiciones": {"tipo_datos": "imagenes"},
                 "recomendacion": "CNN (Redes Neuronales Convolucionales)",
-                "justificacion": "Las CNN son ideales para procesamiento de imagenes con datasets grandes y recursos computacionales adecuados.",
-                "confianza": 0.95
-            },
-            {
-                "id": 2,
-                "condiciones": {
-                    "tipo_datos": "imagenes",
-                    "tamano_dataset": "pequeno",
-                    "recursos_computacionales": "bajo"
-                },
-                "recomendacion": "Transfer Learning con modelos pre-entrenados (ResNet, VGG)",
-                "justificacion": "Para datasets pequeños, el transfer learning permite aprovechar modelos pre-entrenados con menos recursos.",
-                "confianza": 0.90
-            },
-            {
-                "id": 3,
-                "condiciones": {
-                    "tipo_datos": "texto",
-                    "tarea": "clasificacion",
-                    "longitud_texto": "corto"
-                },
-                "recomendacion": "BERT o Transformers para clasificacion de texto",
-                "justificacion": "Los transformers son state-of-the-art para procesamiento de lenguaje natural.",
-                "confianza": 0.92
-            },
-            {
-                "id": 4,
-                "condiciones": {
-                    "tipo_datos": "texto",
-                    "tarea": "generacion",
-                    "recursos_computacionales": "alto"
-                },
-                "recomendacion": "GPT o modelos de lenguaje grandes",
-                "justificacion": "Para generacion de texto se requieren modelos autoregresivos como GPT.",
-                "confianza": 0.88
-            },
-            {
-                "id": 5,
-                "condiciones": {
-                    "tipo_datos": "series_temporales",
-                    "patrones_temporales": "complejos"
-                },
-                "recomendacion": "LSTM o GRU",
-                "justificacion": "Las redes recurrentes son efectivas para capturar dependencias temporales.",
-                "confianza": 0.85
-            },
-            {
-                "id": 6,
-                "condiciones": {
-                    "tipo_datos": "series_temporales",
-                    "patrones_temporales": "largos"
-                },
-                "recomendacion": "Transformers para series temporales",
-                "justificacion": "Los transformers pueden capturar dependencias de largo plazo mejor que LSTM.",
-                "confianza": 0.82
-            },
-            {
-                "id": 7,
-                "condiciones": {
-                    "tipo_datos": "tabular",
-                    "relaciones_no_lineales": True,
-                    "tamano_dataset": "grande"
-                },
-                "recomendacion": "Redes Neuronales Fully Connected",
-                "justificacion": "Para datos tabulares con relaciones complejas y datasets grandes.",
-                "confianza": 0.80
-            },
-            {
-                "id": 8,
-                "condiciones": {
-                    "tipo_datos": "tabular",
-                    "relaciones_no_lineales": False,
-                    "tamano_dataset": "pequeno"
-                },
-                "recomendacion": "Gradient Boosting (XGBoost, LightGBM) o MLP simple",
-                "justificacion": "Para datasets pequeños sin relaciones complejas, metodos clasicos pueden ser suficientes.",
-                "confianza": 0.75
-            },
-            {
-                "id": 9,
-                "condiciones": {
-                    "tipo_datos": "audio",
-                    "tarea": "reconocimiento_voz"
-                },
-                "recomendacion": "CNN + RNN o Transformers para audio",
-                "justificacion": "Combinacion de CNN para caracteristicas espectrales y RNN/Transformers para secuencias temporales.",
-                "confianza": 0.88
-            },
-            {
-                "id": 10,
-                "condiciones": {
-                    "requiere_interpretabilidad": True,
-                    "tipo_datos": "cualquiera"
-                },
-                "recomendacion": "Modelos con atencion o SHAP/LIME para interpretabilidad",
-                "justificacion": "Se priorizan tecnicas que permiten explicar las decisiones del modelo.",
-                "confianza": 0.70
+                "justificacion": "Recomendacion por defecto para imagenes.",
+                "confianza": 0.5
             }
         ]
+    
+    def guardar_reglas_en_json(self):
+        """Guarda las reglas actuales en el archivo JSON"""
+        try:
+            datos = {"reglas": self.reglas}
+            with open(self.archivo_base_conocimiento, 'w', encoding='utf-8') as archivo:
+                json.dump(datos, archivo, indent=2, ensure_ascii=False)
+            print(f"Base de conocimiento guardada en: {self.archivo_base_conocimiento}")
+            return True
+        except Exception as e:
+            print(f"Error guardando la base de conocimiento: {e}")
+            return False
+    
+    def agregar_regla(self, condiciones, recomendacion, justificacion, confianza):
+        """Agrega una nueva regla a la base de conocimiento"""
+        nuevo_id = max([regla["id"] for regla in self.reglas]) + 1 if self.reglas else 1
+        
+        nueva_regla = {
+            "id": nuevo_id,
+            "condiciones": condiciones,
+            "recomendacion": recomendacion,
+            "justificacion": justificacion,
+            "confianza": confianza
+        }
+        
+        self.reglas.append(nueva_regla)
+        return self.guardar_reglas_en_json()
     
     def _preguntar_opciones(self, pregunta, opciones, obligatorio=True):
         """Hace una pregunta con opciones especificas"""
@@ -133,17 +85,6 @@ class SistemaExpertoDL:
                     print(f"ERROR: Por favor, seleccione un numero entre 1 y {len(opciones)}")
             except ValueError:
                 print("ERROR: Por favor, ingrese un numero valido")
-    
-    def _preguntar_si_no(self, pregunta):
-        """Hace una pregunta de si/no"""
-        while True:
-            respuesta = input(f"\n{pregunta} (s/n): ").strip().lower()
-            if respuesta in ['s', 'si', 'sí', 'y', 'yes']:
-                return True
-            elif respuesta in ['n', 'no']:
-                return False
-            else:
-                print("ERROR: Por favor, responda 's' para si o 'n' para no")
     
     def recolectar_hechos_interactivo(self):
         """Recolecta los hechos preguntando uno por uno"""
@@ -268,6 +209,7 @@ class SistemaExpertoDL:
         recomendaciones = []
         
         print(f"\nAnalizando caracteristicas del dataset...")
+        print(f"Hechos proporcionados: {hechos_usuario}")
         
         for regla in self.reglas:
             if self._evaluar_condiciones(regla["condiciones"]):
@@ -277,6 +219,7 @@ class SistemaExpertoDL:
                     "confianza": regla["confianza"],
                     "regla_id": regla["id"]
                 })
+                print(f"Regla #{regla['id']} aplicada: {regla['recomendacion']}")
         
         # Ordenar por confianza
         recomendaciones.sort(key=lambda x: x["confianza"], reverse=True)

@@ -10,16 +10,17 @@ def mostrar_bienvenida():
     print("\nSolo responda las preguntas una por una cuando se le solicite.")
 
 def main():
-    sistema = SistemaExpertoDL()
+    sistema = SistemaExpertoDL("base_conocimiento.json")
     
     while True:
         mostrar_bienvenida()
         
         print("\nQue desea hacer?")
         print("1. Realizar una nueva consulta")
-        print("2. Salir del sistema")
+        print("2. Ver informacion del sistema")
+        print("3. Salir del sistema")
         
-        opcion = input("\nSeleccione una opcion (1-2): ").strip()
+        opcion = input("\nSeleccione una opcion (1-3): ").strip()
         
         if opcion == "1":
             print("\n" + "="*60)
@@ -43,11 +44,22 @@ def main():
                 break
                 
         elif opcion == "2":
+            print("\n" + "="*60)
+            print("INFORMACION DEL SISTEMA")
+            print("="*60)
+            print(f"Base de conocimiento: {sistema.archivo_base_conocimiento}")
+            print(f"Reglas cargadas: {len(sistema.reglas)}")
+            print("\nReglas disponibles:")
+            for regla in sistema.reglas:
+                print(f"  - Regla #{regla['id']}: {regla['recomendacion']}")
+            input("\nPresione Enter para continuar...")
+                
+        elif opcion == "3":
             print("\nHasta pronto!")
             break
             
         else:
-            print("ERROR: Opcion invalida. Por favor, seleccione 1 o 2.")
+            print("ERROR: Opcion invalida. Por favor, seleccione 1, 2 o 3.")
             input("Presione Enter para continuar...")
 
 if __name__ == "__main__":

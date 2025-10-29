@@ -1,0 +1,110 @@
+{
+  "reglas": [
+    {
+      "id": 1,
+      "condiciones": {
+        "tipo_datos": "imagenes",
+        "tamano_dataset": "grande",
+        "recursos_computacionales": "alto"
+      },
+      "recomendacion": "CNN (Redes Neuronales Convolucionales)",
+      "justificacion": "Las CNN son ideales para procesamiento de imagenes con datasets grandes y recursos computacionales adecuados.",
+      "confianza": 0.95
+    },
+    {
+      "id": 2,
+      "condiciones": {
+        "tipo_datos": "imagenes",
+        "tamano_dataset": "pequeno",
+        "recursos_computacionales": "bajo"
+      },
+      "recomendacion": "Transfer Learning con modelos pre-entrenados (ResNet, VGG)",
+      "justificacion": "Para datasets pequeños, el transfer learning permite aprovechar modelos pre-entrenados con menos recursos.",
+      "confianza": 0.90
+    },
+    {
+      "id": 3,
+      "condiciones": {
+        "tipo_datos": "texto",
+        "tarea": "clasificacion",
+        "longitud_texto": "corto"
+      },
+      "recomendacion": "BERT o Transformers para clasificacion de texto",
+      "justificacion": "Los transformers son state-of-the-art para procesamiento de lenguaje natural.",
+      "confianza": 0.92
+    },
+    {
+      "id": 4,
+      "condiciones": {
+        "tipo_datos": "texto",
+        "tarea": "generacion",
+        "recursos_computacionales": "alto"
+      },
+      "recomendacion": "GPT o modelos de lenguaje grandes",
+      "justificacion": "Para generacion de texto se requieren modelos autoregresivos como GPT.",
+      "confianza": 0.88
+    },
+    {
+      "id": 5,
+      "condiciones": {
+        "tipo_datos": "series_temporales",
+        "patrones_temporales": "complejos"
+      },
+      "recomendacion": "LSTM o GRU",
+      "justificacion": "Las redes recurrentes son efectivas para capturar dependencias temporales.",
+      "confianza": 0.85
+    },
+    {
+      "id": 6,
+      "condiciones": {
+        "tipo_datos": "series_temporales",
+        "patrones_temporales": "largos"
+      },
+      "recomendacion": "Transformers para series temporales",
+      "justificacion": "Los transformers pueden capturar dependencias de largo plazo mejor que LSTM.",
+      "confianza": 0.82
+    },
+    {
+      "id": 7,
+      "condiciones": {
+        "tipo_datos": "tabular",
+        "relaciones_no_lineales": true,
+        "tamano_dataset": "grande"
+      },
+      "recomendacion": "Redes Neuronales Fully Connected",
+      "justificacion": "Para datos tabulares con relaciones complejas y datasets grandes.",
+      "confianza": 0.80
+    },
+    {
+      "id": 8,
+      "condiciones": {
+        "tipo_datos": "tabular",
+        "relaciones_no_lineales": false,
+        "tamano_dataset": "pequeno"
+      },
+      "recomendacion": "Gradient Boosting (XGBoost, LightGBM) o MLP simple",
+      "justificacion": "Para datasets pequeños sin relaciones complejas, metodos clasicos pueden ser suficientes.",
+      "confianza": 0.75
+    },
+    {
+      "id": 9,
+      "condiciones": {
+        "tipo_datos": "audio",
+        "tarea": "reconocimiento_voz"
+      },
+      "recomendacion": "CNN + RNN o Transformers para audio",
+      "justificacion": "Combinacion de CNN para caracteristicas espectrales y RNN/Transformers para secuencias temporales.",
+      "confianza": 0.88
+    },
+    {
+      "id": 10,
+      "condiciones": {
+        "requiere_interpretabilidad": true,
+        "tipo_datos": "cualquiera"
+      },
+      "recomendacion": "Modelos con atencion o SHAP/LIME para interpretabilidad",
+      "justificacion": "Se priorizan tecnicas que permiten explicar las decisiones del modelo.",
+      "confianza": 0.70
+    }
+  ]
+}
