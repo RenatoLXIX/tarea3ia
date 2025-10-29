@@ -67,12 +67,5 @@ python main.py
 3. **Introducir Datos:** Completa los campos requeridos en la interfaz.
 4. **Obtener Resultados:** Haz clic en "Analizar" para ver las recomendaciones.
 
-## Contribución
-Si deseas contribuir a este proyecto, sigue estos pasos:
-1. Haz un *fork* del repositorio.
-2. Crea una rama con tu nueva funcionalidad (`git checkout -b feature/nueva-funcionalidad`).
-3. Realiza tus cambios y haz *commit* (`git commit -am 'Añade nueva funcionalidad'`).
-4. Sube tus cambios (`git push origin feature/nueva-funcionalidad`).
-5. Abre un *Pull Request*.
 
 
